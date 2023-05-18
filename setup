@@ -1,0 +1,5 @@
+keypoints_frames.py, overall_video_similarity, settings and clustering => aus DanceMoves
+
+cli.py => aus spiess' cottontaildb-client
+
+visualization & utils brauche ich für die notebooks, run mit: 'jupyter notebook'

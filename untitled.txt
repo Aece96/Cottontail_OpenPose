@@ -1,0 +1,33 @@
+# Connect to Cottontail DB
+with CottontailDBClient('localhost', 1865) as client:
+    # Create schema
+    schema_name = 'dance_moves'
+    existing_schemas = [x.split('.')[-1] for x in client.list_schemas()]
+    if schema_name not in existing_schemas:
+        client.create_schema(schema_name)
+    else:
+        # sys.exit(0)
+        
+    # Define entity columns
+    columns = [
+        column_def('id', Type.STRING, nullable=False),
+        column_def('angle', Type.FLOAT, nullable=True)
+    ]
+    
+    # Loop over all dataframes in your dataset
+    for i, df in dataset.items():
+        
+        # Create entity
+        entity_name = f'df_{i}'
+        client.create_entity(schema_name, entity_name, columns)
+        
+        # Insert batch
+        cols = ['id', 'angle']
+        values = []
+        
+        for j, row in df.iterrows():
+            for k, angle_value in enumerate(row):
+                entry = [Literal(stringData=f'row_{j}_col_{k}'), Literal(floatData=angle_value)]
+                values.append(entry)
+                
+        client.insert_batch(schema_name, entity_name, cols, values)
